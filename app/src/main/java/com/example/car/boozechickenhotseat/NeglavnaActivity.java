@@ -11,12 +11,18 @@ import static android.view.View.INVISIBLE;
 
 
 public class NeglavnaActivity extends Activity implements View.OnTouchListener {
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_neglavna);
         gumb = (Button) findViewById(R.id.drugi);
         gumb.setOnTouchListener(this);
+        gumb.setText("stani");
+        Intent i=getIntent();
+        if(i.getStringExtra("pobjednik").equals("prvi")) gumb.setText("prvi");
+        if(i.getStringExtra("pobjednik").equals("drugi")) gumb.setText("drugi");
     }
     Button gumb;
 

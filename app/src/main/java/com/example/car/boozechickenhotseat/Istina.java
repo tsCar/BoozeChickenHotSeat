@@ -1,17 +1,17 @@
 package com.example.car.boozechickenhotseat;
 
 public class Istina {
-      private boolean stisnut;
+      private boolean istina;
 
     Istina() {
-        stisnut = false;
+        istina = false;
     }
 
-    public void setIstina(boolean stisnut) {
-        this.stisnut = stisnut;
+    public void setIstina(boolean istina) {
+        this.istina = istina;
     }
 
     public boolean istina() {
-        return stisnut;
+        return istina;
     }
 }
