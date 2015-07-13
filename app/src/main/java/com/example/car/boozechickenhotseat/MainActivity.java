@@ -21,7 +21,7 @@ public class MainActivity extends Activity implements View.OnTouchListener/*, Vi
         drugimaligumb = (Button) findViewById(R.id.drugimali);
         drugimaligumb.setOnTouchListener(this);
         novaIgra= (Button) findViewById(R.id.novaIgra);
-        naPocetku();
+        izaberiNovuIgru();
     }
     Button maligumb, drugimaligumb, novaIgra;
     PamtiTimerIStisnut prviStisnut=new PamtiTimerIStisnut() , drugiStisnut=new PamtiTimerIStisnut() ;
@@ -57,27 +57,30 @@ public class MainActivity extends Activity implements View.OnTouchListener/*, Vi
          return (prviStisnut.istina()&& drugiStisnut.istina());
     }
 
-    public void naPocetku(){
+    public void izaberiNovuIgru(){
+        //ovo mogu kasnije preselit u aktivnost s tutorialom ili nešto, u biti mi ne treba.
         maligumb.setVisibility(INVISIBLE);
         drugimaligumb.setVisibility(INVISIBLE);
         novaIgra.setVisibility(VISIBLE);
         novaIgra.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                naKraju();
+                pripremiZaIgru();
             }
         });
     }
     public void tuSeNestoDesi(){
         if(akoSuObaStisnuta()) {
             long vrijeme = System.currentTimeMillis();
-            Intent intent = new Intent(MainActivity.this, NeglavnaActivity.class);
-            MainActivity.this.startActivity(intent);
-            naKraju();
+           proglasenjePobjednika();
+            //pripremiZaIgru();
         }
     }
-
-    public void naKraju(){
+    public void proglasenjePobjednika(){
+        Intent intent = new Intent(MainActivity.this, NeglavnaActivity.class);
+        MainActivity.this.startActivity(intent);
+    }
+    public void pripremiZaIgru(){
         novaIgra.setVisibility(INVISIBLE);
         maligumb.setVisibility(VISIBLE);
         drugimaligumb.setVisibility(VISIBLE);
@@ -105,6 +108,12 @@ public class MainActivity extends Activity implements View.OnTouchListener/*, Vi
                 break;
             default:break;
         }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) { //ovo ne radi ali možda æe mi trebat nešto slièno pa neka stoji ovdje
+        super.onNewIntent(intent);
+        if(intent.getStringExtra("pozovi").equals("pripremiZaIgru")) pripremiZaIgru();
     }
 }
 
