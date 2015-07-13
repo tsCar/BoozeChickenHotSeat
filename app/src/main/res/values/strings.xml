@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Booze Chicken</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="pomicniGumb">  android:textSize="15px" i još svašta</string>
+    <string name="gumbZaNovuIgru">  Start a new game!</string>
+</resources>
