@@ -1,6 +1,7 @@
 package com.example.car.boozechickenhotseat;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -11,7 +12,6 @@ import static android.view.View.VISIBLE;
 public class MainActivity extends Activity implements View.OnTouchListener/*, View.OnLongClickListener*/{
 
     protected void onCreate(Bundle savedInstanceState)  {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         novaIgra=(Button) findViewById(R.id.novaIgra);
@@ -32,7 +32,7 @@ public class MainActivity extends Activity implements View.OnTouchListener/*, Vi
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
                 stisnutGumb(v);
-                AkoSuObaStisnuta();
+                tuSeNestoDesi();
                 dX = v.getX() - event.getRawX();
                 dY = v.getY() - event.getRawY();
                 break;
@@ -53,10 +53,8 @@ public class MainActivity extends Activity implements View.OnTouchListener/*, Vi
     }
 
 
-    void AkoSuObaStisnuta(){
-         if(prviStisnut.istina()&& drugiStisnut.istina()) {
-            naPocetku();
-         }
+    boolean akoSuObaStisnuta(){
+         return (prviStisnut.istina()&& drugiStisnut.istina());
     }
 
     public void naPocetku(){
@@ -66,12 +64,17 @@ public class MainActivity extends Activity implements View.OnTouchListener/*, Vi
         novaIgra.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tuSeNestoDesi();
+                naKraju();
             }
         });
     }
     public void tuSeNestoDesi(){
-        naKraju();
+        if(akoSuObaStisnuta()) {
+            long vrijeme = System.currentTimeMillis();
+            Intent intent = new Intent(MainActivity.this, NeglavnaActivity.class);
+            MainActivity.this.startActivity(intent);
+            naKraju();
+        }
     }
 
     public void naKraju(){

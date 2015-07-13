@@ -22,6 +22,9 @@ public class NeglavnaActivity extends Activity implements View.OnTouchListener {
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+        Intent intent = new Intent(NeglavnaActivity.this, MainActivity.class);
+        NeglavnaActivity.this.startActivity(intent);
+        finish();
         finish();
 
         return false;
