@@ -1,7 +1,6 @@
 package com.example.car.boozechickenhotseat;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -25,7 +24,7 @@ public class MainActivity extends Activity implements View.OnTouchListener/*, Vi
         naPocetku();
     }
     Button maligumb, drugimaligumb, novaIgra;
-    Istina prviStisnut =new Istina(), drugiStisnut =new Istina();
+    PamtiTimerIStisnut prviStisnut=new PamtiTimerIStisnut() , drugiStisnut=new PamtiTimerIStisnut() ;
     float dX,dY;
 
 
