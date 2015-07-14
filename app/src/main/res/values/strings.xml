@@ -5,4 +5,8 @@
     <string name="action_settings">Settings</string>
     <string name="pomicniGumb">  android:textSize="15px" i još svašta</string>
     <string name="gumbZaNovuIgru">  Start a new game!</string>
+    <string name="pobijedioPlavi">Pobijedio je plavi, crveni pije!</string>
+    <string name="pobijedioCrveni"> Pobijedio je crveni, Plavi pije</string>
+    <string name="istekloVrijeme">Vrijeme isteklo!\nOba igraca piju duplo!</string>
+
 </resources>

@@ -30,6 +30,7 @@ public class MainActivity extends Activity implements View.OnTouchListener/*, Vi
     }
     protected void onStart(){
         super.onStart();
+        thread = new HandlerThread("thread");
         thread.start();
         looper = thread.getLooper();
         handler = new Handler(looper);
@@ -45,12 +46,17 @@ public class MainActivity extends Activity implements View.OnTouchListener/*, Vi
     protected void onStop(){
         super.onStop();
         thread.quit();
+
+    }
+    protected void onResume(){
+        super.onResume();
+
     }
 //tu su mi varijable!
     Button maligumb, drugimaligumb, novaIgra;
-    PamtiTimerIStisnut prviStisnut=new PamtiTimerIStisnut() , drugiStisnut=new PamtiTimerIStisnut() ;
+    PamtiTimerIStisnut prviStisnut=new PamtiTimerIStisnut() , drugiStisnut=new PamtiTimerIStisnut() ; //sad kad ne pamtim vrijeme mogu pobrisat klasu pamtiTimerIStisnut i koristit klasu Istina
     float dX,dY;
-    HandlerThread thread = new HandlerThread("thread");
+    HandlerThread thread;
     Looper looper ;
     Handler handler ;
     Runnable runnable;
@@ -64,7 +70,6 @@ public class MainActivity extends Activity implements View.OnTouchListener/*, Vi
             case MotionEvent.ACTION_DOWN:
                 stisnutGumb(v);
                 if (obaSuStisnuta()) { //poèni timer
-                   double vrijeme = System.currentTimeMillis();
                    handler.postDelayed(runnable, napraviInterval());
                    timerTece.setIstina(true);
                 }
@@ -79,12 +84,12 @@ public class MainActivity extends Activity implements View.OnTouchListener/*, Vi
                         .start();
                 break;
             case MotionEvent.ACTION_UP:
+                pustenGumb(v);
                 if(timerTece.istina()) {
                     handler.removeCallbacksAndMessages(null);
                     timerTece.setIstina(false);
-                    pocniIgru();
+                    pocniIgru(v);
                 }
-                pustenGumb(v);
                 break;
             default:
                 return false;
@@ -110,17 +115,16 @@ public class MainActivity extends Activity implements View.OnTouchListener/*, Vi
             }
         });
     }
-    public void pocniIgru(){
+    public void pocniIgru(View v){
         String pobjednik;
-        if((prviStisnut.getVrijeme())>(drugiStisnut.getVrijeme())) pobjednik="prvi";
-        else pobjednik="drugi";
-        if((prviStisnut.getVrijeme())==(drugiStisnut.getVrijeme()))pobjednik="nitko";
-            proglasenjePobjednika(pobjednik);
-
+        if(v.getId()==R.id.mali) pobjednik="drugi";
+        else pobjednik="prvi";
+        proglasenjePobjednika(pobjednik);
     }
+
     public void proglasenjePobjednika(String s){
         Intent intent = new Intent(MainActivity.this, NeglavnaActivity.class);
-        intent.putExtra("pobjednik",s);
+        intent.putExtra("pobjednik", s);
         MainActivity.this.startActivity(intent);
     }
 
@@ -134,11 +138,9 @@ public class MainActivity extends Activity implements View.OnTouchListener/*, Vi
         switch(v.getId()){
             case R.id.mali:
                 prviStisnut.setIstina(true);
-                prviStisnut.setVrijeme(0);
                 break;
             case R.id.drugimali:
                 drugiStisnut.setIstina(true);
-                drugiStisnut.setVrijeme(0);
                 break;
             default:break;
         }
@@ -148,11 +150,9 @@ public class MainActivity extends Activity implements View.OnTouchListener/*, Vi
         switch(v.getId()){
             case R.id.mali:
                 prviStisnut.setIstina(false);
-                if(obaSuStisnuta())prviStisnut.setVrijeme(System.currentTimeMillis());
                 break;
             case R.id.drugimali:
                 drugiStisnut.setIstina(false);
-                if(obaSuStisnuta())drugiStisnut.setVrijeme(System.currentTimeMillis());
                 break;
             default:break;
         }
@@ -161,12 +161,6 @@ public class MainActivity extends Activity implements View.OnTouchListener/*, Vi
     public long napraviInterval(){
         Random rnd = new Random();
         return rnd.nextInt(1000) + 1500;
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) { //ovo ne radi ali možda æe mi trebat nešto slièno pa neka stoji ovdje
-        super.onNewIntent(intent);
-        if(intent.getStringExtra("pozovi").equals("pripremiZaIgru")) pripremiZaIgru();
     }
 }
 

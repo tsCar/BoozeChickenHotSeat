@@ -23,16 +23,13 @@ public class NeglavnaActivity extends Activity implements View.OnTouchListener {
         Intent i=getIntent();
         switch(i.getStringExtra("pobjednik")){
             case ("prvi"):
-                gumb.setText("prvi");
+                gumb.setText(R.string.pobijedioPlavi);
                 break;
             case ("drugi"):
-                gumb.setText("drugi");
-                break;
-            case ("nitko"):
-                gumb.setText("nitko");
+                gumb.setText(R.string.pobijedioCrveni);
                 break;
             case ("Grga"):
-                gumb.setText("Vrijeme isteklo!");
+                gumb.setText(R.string.istekloVrijeme);
                 break;
         }
     }
