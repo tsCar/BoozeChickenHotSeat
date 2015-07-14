@@ -10,7 +10,7 @@ import android.widget.RelativeLayout;
 import static android.view.View.INVISIBLE;
 
 
-public class NeglavnaActivity extends Activity implements View.OnTouchListener {
+public class NeglavnaActivity extends Opcije implements View.OnTouchListener {
 
 
     @Override

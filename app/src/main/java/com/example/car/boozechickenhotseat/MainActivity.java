@@ -4,6 +4,10 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -14,7 +18,7 @@ import java.util.Random;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
-public class MainActivity extends Activity implements View.OnTouchListener/*, View.OnLongClickListener*/{
+public class MainActivity extends Opcije implements View.OnTouchListener/*, View.OnLongClickListener*/{
 
     protected void onCreate(Bundle savedInstanceState)  {
         super.onCreate(savedInstanceState);
@@ -28,6 +32,7 @@ public class MainActivity extends Activity implements View.OnTouchListener/*, Vi
         novaIgra= (Button) findViewById(R.id.novaIgra);
         mp = MediaPlayer.create(MainActivity.this,R.raw.rise);
         pripremiZaIgru();
+        zvukUpaljen.setIstina(true);
 
     }
     protected void onStart(){
@@ -49,11 +54,27 @@ public class MainActivity extends Activity implements View.OnTouchListener/*, Vi
     protected void onStop(){
         super.onStop();
         thread.quit();
-
     }
     protected void onResume(){
         super.onResume();
     }
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.zvuk:
+                if(zvukUpaljen.istina()){
+                    zvukUpaljen.setIstina(false);
+                }
+                else {
+                    zvukUpaljen.setIstina(true);
+                }
+                return true;
+            /*case R.id.action_settings:
+                return true;*/
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
 //tu su mi varijable!
     Button maligumb, drugimaligumb, novaIgra;
     PamtiTimerIStisnut prviStisnut=new PamtiTimerIStisnut() , drugiStisnut=new PamtiTimerIStisnut() ; //sad kad ne pamtim vrijeme mogu pobrisat klasu pamtiTimerIStisnut i koristit klasu Istina
@@ -64,6 +85,7 @@ public class MainActivity extends Activity implements View.OnTouchListener/*, Vi
     Runnable runnable;
     Istina timerTece=new Istina();
     MediaPlayer mp;
+    Istina zvukUpaljen=new Istina();
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     public boolean onTouch(View v, MotionEvent event) {
 
@@ -71,7 +93,7 @@ public class MainActivity extends Activity implements View.OnTouchListener/*, Vi
             case MotionEvent.ACTION_DOWN:
                 stisnutGumb(v);
                 if (obaSuStisnuta()) { //poèni timer
-                   mp.start();
+                   if(zvukUpaljen.istina())mp.start();
                    handler.postDelayed(runnable, napraviInterval());
                    timerTece.setIstina(true);
                 }
@@ -90,7 +112,7 @@ public class MainActivity extends Activity implements View.OnTouchListener/*, Vi
                 if(timerTece.istina()) {
                     handler.removeCallbacksAndMessages(null);
                     timerTece.setIstina(false);
-                    mp.stop();
+                    if(mp.isPlaying())mp.stop();
                     pocniIgru(v);
                 }
                 break;
