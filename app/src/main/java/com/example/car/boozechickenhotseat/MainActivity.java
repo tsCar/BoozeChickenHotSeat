@@ -3,6 +3,7 @@ package com.example.car.boozechickenhotseat;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -25,6 +26,7 @@ public class MainActivity extends Activity implements View.OnTouchListener/*, Vi
         drugimaligumb = (Button) findViewById(R.id.drugimali);
         drugimaligumb.setOnTouchListener(this);
         novaIgra= (Button) findViewById(R.id.novaIgra);
+        mp = MediaPlayer.create(MainActivity.this,R.raw.rise);
         pripremiZaIgru();
 
     }
@@ -39,6 +41,7 @@ public class MainActivity extends Activity implements View.OnTouchListener/*, Vi
             public void run() {
                 proglasenjePobjednika("Grga");
                 timerTece.setIstina(false);
+                if(mp.isPlaying())mp.stop();
             }
         };
         timerTece.setIstina(false);
@@ -50,7 +53,6 @@ public class MainActivity extends Activity implements View.OnTouchListener/*, Vi
     }
     protected void onResume(){
         super.onResume();
-
     }
 //tu su mi varijable!
     Button maligumb, drugimaligumb, novaIgra;
@@ -61,8 +63,7 @@ public class MainActivity extends Activity implements View.OnTouchListener/*, Vi
     Handler handler ;
     Runnable runnable;
     Istina timerTece=new Istina();
-
-
+    MediaPlayer mp;
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     public boolean onTouch(View v, MotionEvent event) {
 
@@ -70,6 +71,7 @@ public class MainActivity extends Activity implements View.OnTouchListener/*, Vi
             case MotionEvent.ACTION_DOWN:
                 stisnutGumb(v);
                 if (obaSuStisnuta()) { //poèni timer
+                   mp.start();
                    handler.postDelayed(runnable, napraviInterval());
                    timerTece.setIstina(true);
                 }
@@ -88,6 +90,7 @@ public class MainActivity extends Activity implements View.OnTouchListener/*, Vi
                 if(timerTece.istina()) {
                     handler.removeCallbacksAndMessages(null);
                     timerTece.setIstina(false);
+                    mp.stop();
                     pocniIgru(v);
                 }
                 break;
