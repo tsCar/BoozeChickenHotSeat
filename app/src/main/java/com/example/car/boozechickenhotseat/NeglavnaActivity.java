@@ -21,8 +21,20 @@ public class NeglavnaActivity extends Activity implements View.OnTouchListener {
         gumb.setOnTouchListener(this);
         gumb.setText("stani");
         Intent i=getIntent();
-        if(i.getStringExtra("pobjednik").equals("prvi")) gumb.setText("prvi");
-        if(i.getStringExtra("pobjednik").equals("drugi")) gumb.setText("drugi");
+        switch(i.getStringExtra("pobjednik")){
+            case ("prvi"):
+                gumb.setText("prvi");
+                break;
+            case ("drugi"):
+                gumb.setText("drugi");
+                break;
+            case ("nitko"):
+                gumb.setText("nitko");
+                break;
+            case ("Grga"):
+                gumb.setText("Vrijeme isteklo!");
+                break;
+        }
     }
     Button gumb;
 

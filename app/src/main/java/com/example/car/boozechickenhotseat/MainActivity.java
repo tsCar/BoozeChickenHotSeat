@@ -1,16 +1,13 @@
 package com.example.car.boozechickenhotseat;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
-import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.os.*;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 
 
 import static android.view.View.INVISIBLE;
@@ -31,33 +28,46 @@ public class MainActivity extends Activity implements View.OnTouchListener/*, Vi
         pripremiZaIgru();
 
     }
-    Istina igraSpremna=new Istina();
+    protected void onStart(){
+        super.onStart();
+        thread.start();
+        looper = thread.getLooper();
+        handler = new Handler(looper);
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                proglasenjePobjednika("Grga");
+                timerTece.setIstina(false);
+            }
+        };
+        timerTece.setIstina(false);
+    }
+    protected void onStop(){
+        super.onStop();
+        thread.quit();
+    }
+//tu su mi varijable!
     Button maligumb, drugimaligumb, novaIgra;
     PamtiTimerIStisnut prviStisnut=new PamtiTimerIStisnut() , drugiStisnut=new PamtiTimerIStisnut() ;
     float dX,dY;
+    HandlerThread thread = new HandlerThread("thread");
+    Looper looper ;
+    Handler handler ;
+    Runnable runnable;
+    Istina timerTece=new Istina();
 
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     public boolean onTouch(View v, MotionEvent event) {
-        final Handler handler = new Handler();
+
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
                 stisnutGumb(v);
                 if (obaSuStisnuta()) { //poèni timer
-                    igraSpremna.setIstina(true);
-                    double vrijeme = System.currentTimeMillis();
-                    Random rnd = new Random();
-                    final int interval = rnd.nextInt(1000) + 1500;
-                    final Runnable handlerTask= new Runnable() {
-                        @Override
-                        public void run() {
-                            handler.postDelayed(this, interval);
-                            proglasenjePobjednika("");
-                        }
-
-                    };
-                    handlerTask.run();
+                   double vrijeme = System.currentTimeMillis();
+                   handler.postDelayed(runnable, napraviInterval());
+                   timerTece.setIstina(true);
                 }
-
                 dX = v.getX() - event.getRawX();
                 dY = v.getY() - event.getRawY();
                 break;
@@ -69,12 +79,11 @@ public class MainActivity extends Activity implements View.OnTouchListener/*, Vi
                         .start();
                 break;
             case MotionEvent.ACTION_UP:
-                if(igraSpremna.istina()) {
-
+                if(timerTece.istina()) {
                     handler.removeCallbacksAndMessages(null);
-                    pocniIgru();//poništi timer
+                    timerTece.setIstina(false);
+                    pocniIgru();
                 }
-                igraSpremna.setIstina(false);
                 pustenGumb(v);
                 break;
             default:
@@ -102,11 +111,11 @@ public class MainActivity extends Activity implements View.OnTouchListener/*, Vi
         });
     }
     public void pocniIgru(){
-        String pobjednik="nitko";
-
+        String pobjednik;
         if((prviStisnut.getVrijeme())>(drugiStisnut.getVrijeme())) pobjednik="prvi";
         else pobjednik="drugi";
-        final String p=pobjednik;
+        if((prviStisnut.getVrijeme())==(drugiStisnut.getVrijeme()))pobjednik="nitko";
+            proglasenjePobjednika(pobjednik);
 
     }
     public void proglasenjePobjednika(String s){
@@ -139,14 +148,19 @@ public class MainActivity extends Activity implements View.OnTouchListener/*, Vi
         switch(v.getId()){
             case R.id.mali:
                 prviStisnut.setIstina(false);
-                prviStisnut.setVrijeme(System.currentTimeMillis());
+                if(obaSuStisnuta())prviStisnut.setVrijeme(System.currentTimeMillis());
                 break;
             case R.id.drugimali:
                 drugiStisnut.setIstina(false);
-                drugiStisnut.setVrijeme(System.currentTimeMillis());
+                if(obaSuStisnuta())drugiStisnut.setVrijeme(System.currentTimeMillis());
                 break;
             default:break;
         }
+    }
+
+    public long napraviInterval(){
+        Random rnd = new Random();
+        return rnd.nextInt(1000) + 1500;
     }
 
     @Override
