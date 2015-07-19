@@ -185,7 +185,7 @@ public class MainActivity extends Opcije implements View.OnTouchListener/*, View
 
     public long napraviInterval(){
         Random rnd = new Random();
-        return rnd.nextInt(1000) + 1500;
+        return rnd.nextInt(3000) + 3000;
     }
 }
 
