@@ -1,13 +1,8 @@
 package com.example.car.boozechickenhotseat;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Intent;
 import android.media.MediaPlayer;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -18,10 +13,11 @@ import java.util.Random;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
-public class MainActivity extends Opcije implements View.OnTouchListener/*, View.OnLongClickListener*/{
-
+public class MainActivity extends KorisnickeOpcije implements View.OnTouchListener/*, View.OnLongClickListener*/{
+    @Override
     protected void onCreate(Bundle savedInstanceState)  {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         novaIgra=(Button) findViewById(R.id.novaIgra);
         novaIgra.setVisibility(INVISIBLE);
@@ -29,12 +25,9 @@ public class MainActivity extends Opcije implements View.OnTouchListener/*, View
         maligumb.setOnTouchListener(this);
         drugimaligumb = (Button) findViewById(R.id.drugimali);
         drugimaligumb.setOnTouchListener(this);
-        novaIgra= (Button) findViewById(R.id.novaIgra);
-        mp = MediaPlayer.create(MainActivity.this,R.raw.rise);
         pripremiZaIgru();
-        zvukUpaljen.setIstina(true);
-
     }
+    @Override
     protected void onStart(){
         super.onStart();
         thread = new HandlerThread("thread");
@@ -51,29 +44,17 @@ public class MainActivity extends Opcije implements View.OnTouchListener/*, View
         };
         timerTece.setIstina(false);
     }
+    @Override
     protected void onStop(){
         super.onStop();
         thread.quit();
     }
+    @Override
     protected void onResume(){
         super.onResume();
+        mp = MediaPlayer.create(MainActivity.this,R.raw.rise);
     }
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.zvuk:
-                if(zvukUpaljen.istina()){
-                    zvukUpaljen.setIstina(false);
-                }
-                else {
-                    zvukUpaljen.setIstina(true);
-                }
-                return true;
-            /*case R.id.action_settings:
-                return true;*/
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
+
 
 //tu su mi varijable!
     Button maligumb, drugimaligumb, novaIgra;
@@ -85,28 +66,32 @@ public class MainActivity extends Opcije implements View.OnTouchListener/*, View
     Runnable runnable;
     Istina timerTece=new Istina();
     MediaPlayer mp;
-    Istina zvukUpaljen=new Istina();
+
+
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     public boolean onTouch(View v, MotionEvent event) {
 
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
                 stisnutGumb(v);
-                if (obaSuStisnuta()) { //poèni timer
-                   if(zvukUpaljen.istina())mp.start();
-                   handler.postDelayed(runnable, napraviInterval());
-                   timerTece.setIstina(true);
+                if (obaSuStisnuta()) { //poï¿½ni timer
+                    if (zvukUpaljen) mp.start();
+                    handler.postDelayed(runnable, napraviInterval());
+                    timerTece.setIstina(true);
                 }
                 dX = v.getX() - event.getRawX();
                 dY = v.getY() - event.getRawY();
                 break;
             case MotionEvent.ACTION_MOVE:
-                v.animate()
-                        .x(event.getRawX() + dX)
-                        .y(event.getRawY() + dY)
-                        .setDuration(0)
-                        .start();
+                if (!obaSuStisnuta()) {
+                    v.animate()
+                            .x(event.getRawX() + dX)
+                            .y(event.getRawY() + dY)
+                            .setDuration(0)
+                            .start();
+                }
                 break;
+
             case MotionEvent.ACTION_UP:
                 pustenGumb(v);
                 if(timerTece.istina()) {
@@ -127,9 +112,10 @@ public class MainActivity extends Opcije implements View.OnTouchListener/*, View
     boolean obaSuStisnuta(){
          return (prviStisnut.istina()&& drugiStisnut.istina());
     }
+    boolean barJedanJeStisnut() {return (prviStisnut.istina()|| drugiStisnut.istina());}
 
     public void izaberiNovuIgru(){
-        //ovo mogu kasnije preselit u aktivnost s tutorialom ili nešto, u biti mi ne treba.
+        //ovo mogu kasnije preselit u aktivnost s tutorialom ili neï¿½to, u biti mi ne treba.
         maligumb.setVisibility(INVISIBLE);
         drugimaligumb.setVisibility(INVISIBLE);
         novaIgra.setVisibility(VISIBLE);

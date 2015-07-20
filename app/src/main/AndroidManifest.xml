@@ -17,9 +17,15 @@
             </intent-filter>
         </activity>
         <activity
+
             android:name=".NeglavnaActivity"
             android:label="@string/app_name" >
         </activity>
+        <activity
+            android:name=".KorisnickeOpcije"
+            android:label="@string/app_name" >
+        </activity>
+
     </application>
 
 </manifest>
